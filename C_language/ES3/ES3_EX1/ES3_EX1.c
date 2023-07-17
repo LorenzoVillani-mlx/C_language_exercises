@@ -6,7 +6,8 @@
 int main(){
 
     FILE *fp_in, *fp_out;
-    char c,q;
+    char curr;
+    int cnt,i;
 
     fp_in = fopen("input.txt","r");
     fp_out = fopen("output.txt","w");
@@ -19,26 +20,38 @@ int main(){
         printf("ERROR: unable to open output.txt\n");
         return 2;
     }
-    
-    while(fscanf(fp_in,"%c",&c) != EOF){
-        fprintf(stderr, "ho la mamma troia: %c\n", c);
-        if (isdigit(c) != 0){
-            c = '*';
-            fprintf(fp_out,"%c",c);
-        } else {
-            if(ispunct(c)){
-                
-                fscanf(fp_in,"%c",&q);
-                if(q == ' '){
-                    fprintf(stderr, "inner if: %c %c\n", c, q);
-                    fprintf(fp_out, "%c%c",c,q);
-                } else {
-                    fprintf(fp_out,"%c %c",c,q);
-                }
-            }
-        }
 
+    cnt = 0;
+    while(fscanf(fp_in,"%c",&curr) != EOF){
+
+        cnt++;
+        if(cnt==25){
+            fprintf(fp_out,"%c | c:%d\n",curr,cnt);
+            cnt = 0;
+        }else if(curr == '\n'){
+            for(i=0;i<27-cnt;i++){
+                fprintf(fp_out," ");
+            }
+            fprintf(fp_out, "| c:%d",cnt-1);
+            fprintf(fp_out,"%c",curr);
+            cnt = 0;
+        }else{
+            if(isdigit(curr)!=0){
+                curr = '*';
+            }
+            fprintf(fp_out,"%c",curr);
+        }
     }
+    if(cnt != 0){
+        for(i=0;i<26-cnt;i++){
+            fprintf(fp_out," ");
+        }
+        fprintf(fp_out,"| c:%d",cnt);
+    }
+
+    fclose(fp_in);
+    fclose(fp_out);
+
 
     return 0;
 }
